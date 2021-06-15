@@ -7,7 +7,7 @@ library(bigrquery)
 library(DBI)
 
 
-get_db <- function(endpoint = NULL, modifier = NULL){
+get_db_stats <- function(endpoint = NULL, modifier = NULL){
   base <- "https://statsapi.web.nhl.com/api/v1"
   
   URL <- paste0(base, "/" , endpoint, "/" , modifier)
@@ -17,22 +17,25 @@ get_db <- function(endpoint = NULL, modifier = NULL){
   return(tbl_df(temp_JSON))
 }
 
-df_teams <- get_db("teams")
-df_franchise <- get_db("franchises")
-df_people <- get_db('people', '8477474')
-df_people
-#df_team_roster <- get_db("teams?expand=team.roster")
-df_temp <- get_db('draft')
-df_temp
-print(df_teams)
-print(df_franchise)
+get_db_records <- function(endpoint = NULL, modifier = NULL){
+  base <- "https://records.nhl.com/site/api"
+  
+  URL <- paste0(base, "/" , endpoint, modifier)
+  temp_con <- GET(URL)
+  temp_text <- content(temp_con, "text")
+  temp_JSON <- fromJSON(temp_text, flatten = TRUE)
+  return(tbl_df(temp_JSON))
+}
 
-#/franchise    #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
-#/franchise-team-totals #(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
-#/site/api/franchise-season-records?cayenneExp=franchiseId=ID #(Drill-down into season records for a specific franchise)
-#/franchise-goalie-records?cayenneExp=franchiseId=ID #(Goalie records for the specified franchise)
-#/franchise-skater-records?cayenneExp=franchiseId=ID #(Skater records, same interaction as goalie endpoint)
-#/site/api/franchise-detail?cayenneExp=mostRecentTeamId=ID #(Admin history and retired numbers)
+df_franchise <- get_db_records('franchise')    #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
+df_fran_team_tot <- get_db_records('franchise-team-totals') #(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+get_db_records('franchise-season-records?cayenneExp=franchiseId=16') #(Drill-down into season records for a specific franchise)
+get_db_records('franchise-goalie-records?cayenneExp=franchiseId=6') #(Goalie records for the specified franchise)
+get_db_records('franchise-skater-records?cayenneExp=franchiseId=6') #(Skater records, same interaction as goalie endpoint)
+df_franchise_det <- get_db_records('franchise-detail') #?cayenneExp=mostRecentTeamId=6') #(Admin history and retired numbers)
+
+df_franchise2 <- get_db_stats('franchises')
+
 
 as_tibble(fromJSON(content(GET('https://statsapi.web.nhl.com/api/v1/standings?season=20052006'), 'text'), flatten = TRUE))
 

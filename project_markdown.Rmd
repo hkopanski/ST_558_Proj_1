@@ -1,0 +1,58 @@
+---
+title: "Project 1"
+author: "Halid Kopanski"
+date: "6/14/2021"
+output:
+  github_document: default
+  html_document: default
+---
+
+```{r setup, echo = FALSE}
+library(httr)
+library(jsonlite)
+library(tidyverse)
+library(DT)
+library(RSQLite)
+library(bigrquery)
+library(DBI)
+```
+
+## Create data functions
+
+```{r functions, echo = FALSE}
+get_db_stats <- function(endpoint = NULL, modifier = NULL){
+  base <- "https://statsapi.web.nhl.com/api/v1"
+  
+  URL <- paste0(base, "/" , endpoint, modifier)
+  temp_con <- GET(URL)
+  temp_text <- content(temp_con, "text")
+  temp_JSON <- fromJSON(temp_text, flatten = TRUE)
+  return(tbl_df(temp_JSON))
+}
+
+get_db_records <- function(endpoint = NULL, modifier = NULL){
+  base <- "https://records.nhl.com/site/api"
+  
+  URL <- paste0(base, "/" , endpoint, modifier)
+  temp_con <- GET(URL)
+  temp_text <- content(temp_con, "text")
+  temp_JSON <- fromJSON(temp_text, flatten = TRUE)
+  return(tbl_df(temp_JSON))
+}
+```
+
+## Setup ID Data
+
+```{r dataframes, echo=FALSE}
+df_franchise <- get_db_records('franchise') #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
+df_fran_team_tot <- get_db_records('franchise-team-totals') #(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+df_franchise_det <- get_db_records('franchise-detail') #(Admin history and retired numbers)
+df_teams <- get_db_stats('teams')
+```
+
+## Display Data
+
+```{r datatables, echoe = FALSE}
+df_franchise
+df_teams
+```
