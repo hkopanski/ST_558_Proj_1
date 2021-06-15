@@ -42,3 +42,6 @@ df_teams %>% inner_join(df_franchise, by = abbreviation)
 
 
 ggplot(data = df_goalie_briuns) + geom_bar(aes(x = data$wins))
+
+# This is the syntax for team stats and the modifier
+get_db_stats('teams/16', '?expand=team.stats')
