@@ -54,6 +54,7 @@ df_stats <- get_db_stats('teams/16', '?expand=team.stats')
 
 # This is to pull team specific information
 get_records <- function(team = NULL, ID = NULL){
+  team_list <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName)
   tryCatch(
   if(is.null(team) & !is.null(ID)){
     temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
@@ -62,8 +63,10 @@ get_records <- function(team = NULL, ID = NULL){
       temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team)) %>% select(id)
       temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
       get_db_records(temp_string)
-    }, warning = print("Enter a valid Team or ID"))
+    }, warning = print("Choose ID from list"), warning = print(knitr::kable(team_list)))
 }
 
 df_temp <- get_records("1000")
 print(df_temp$data[['franchiseName']])
+
+df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% print()

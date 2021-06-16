@@ -41,17 +41,23 @@ get_db_records <- function(endpoint = NULL, modifier = NULL){
 }
 
 # This is to pull team specific information
+df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% knitr::kable()
+
 get_records <- function(team = NULL, ID = NULL){
-  tryCatch(
-  if(is.null(team) & !is.null(ID)){
-    temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
-    get_db_records(temp_string)}
+  
+    if(is.null(team) & !is.null(ID)){
+      temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
+      get_db_records(temp_string)}
     else if(!is.null(team)){
-      temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team)) %>% select(id)
+      team_alt = tail(strsplit(team, " ")[[1]], n = 1)
+      temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
       temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
       get_db_records(temp_string)
-    }, warning = print("Enter a valid Team or ID"))
-}
+      }
+  }
+
+df_temp <- get_records("Maple Leafs")
+print(df_temp$data[['franchiseName']])
 ```
 
 ## Setup ID Data
