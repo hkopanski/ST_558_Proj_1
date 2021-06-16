@@ -29,10 +29,13 @@ get_db_records <- function(endpoint = NULL, modifier = NULL){
 
 df_franchise <- get_db_records('franchise')    #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
 df_fran_team_tot <- get_db_records('franchise-team-totals') #(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
-get_db_records('franchise-season-records?cayenneExp=franchiseId=16') #(Drill-down into season records for a specific franchise)
+df_records <- get_db_records('franchise-season-records?cayenneExp=franchiseId=16') #(Drill-down into season records for a specific franchise)
 df_goalie_briuns <- get_db_records('franchise-goalie-records?cayenneExp=franchiseId=6') #(Goalie records for the specified franchise)
 get_db_records('franchise-skater-records?cayenneExp=franchiseId=6') #(Skater records, same interaction as goalie endpoint)
 df_franchise_det <- get_db_records('franchise-detail') #?cayenneExp=mostRecentTeamId=6') #(Admin history and retired numbers)
+
+df_franchise_det <- df_franchise_det$data %>% rowwise() %>% 
+  mutate(short_name = tail(strsplit(teamFullName, " ")[[1]], n = 1))
 
 df_teams <- get_db_stats('teams')
 
@@ -40,8 +43,28 @@ df_franchise2 <- get_db_stats('franchises')
 
 df_teams %>% inner_join(df_franchise, by = abbreviation)
 
+df_goalie_briuns$data %>% select(lastName, wins, ties, shutouts) %>% filter(lastName == 'Casey')
 
 ggplot(data = df_goalie_briuns) + geom_bar(aes(x = data$wins))
 
 # This is the syntax for team stats and the modifier
-get_db_stats('teams/16', '?expand=team.stats')
+df_stats <- get_db_stats('teams/16', '?expand=team.stats')
+
+
+
+# This is to pull team specific information
+get_records <- function(team = NULL, ID = NULL){
+  if(is.null(team)){
+    temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
+    get_db_records(temp_string)}
+    else if(!is.null(team)){
+      temp_ID <- df_franchise_det %>% filter(short_name == team) %>% select(id)
+      temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
+      get_db_records(temp_string)
+    }
+    else{
+      print("Enter a valid Team or ID")
+    }
+}
+df_temp <- get_records(ID = 6, team = "")
+print(df_temp$data[['franchiseName']])
