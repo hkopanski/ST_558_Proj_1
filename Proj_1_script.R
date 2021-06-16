@@ -54,17 +54,16 @@ df_stats <- get_db_stats('teams/16', '?expand=team.stats')
 
 # This is to pull team specific information
 get_records <- function(team = NULL, ID = NULL){
-  if(is.null(team)){
+  tryCatch(
+  if(is.null(team) & !is.null(ID)){
     temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
     get_db_records(temp_string)}
     else if(!is.null(team)){
-      temp_ID <- df_franchise_det %>% filter(short_name == team) %>% select(id)
+      temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team)) %>% select(id)
       temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
       get_db_records(temp_string)
-    }
-    else{
-      print("Enter a valid Team or ID")
-    }
+    }, warning = print("Enter a valid Team or ID"))
 }
-df_temp <- get_records(ID = 6, team = "")
+
+df_temp <- get_records("1000")
 print(df_temp$data[['franchiseName']])
