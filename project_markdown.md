@@ -17,12 +17,55 @@ Halid Kopanski
 
 ## Create data functions
 
-## Setup ID Data
-
     ## No encoding supplied: defaulting to UTF-8.
 
     ## Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
     ## Please use `tibble::as_tibble()` instead.
+
+    ## No encoding supplied: defaulting to UTF-8.
+
+| id | franchiseName       | lossStreak | winStreak | mostGoals | fewestGoals |
+| -: | :------------------ | ---------: | --------: | --------: | ----------: |
+| 10 | Toronto Maple Leafs |         10 |        10 |       337 |         147 |
+
+## Setup ID Data
+
+    ## No encoding supplied: defaulting to UTF-8.
+
+| id | teamCommonName |
+| -: | :------------- |
+|  1 | Canadiens      |
+|  5 | Maple Leafs    |
+|  6 | Bruins         |
+| 10 | Rangers        |
+| 11 | Blackhawks     |
+| 12 | Red Wings      |
+| 14 | Kings          |
+| 15 | Stars          |
+| 16 | Flyers         |
+| 17 | Penguins       |
+| 18 | Blues          |
+| 19 | Sabres         |
+| 20 | Canucks        |
+| 21 | Flames         |
+| 22 | Islanders      |
+| 23 | Devils         |
+| 24 | Capitals       |
+| 25 | Oilers         |
+| 26 | Hurricanes     |
+| 27 | Avalanche      |
+| 28 | Coyotes        |
+| 29 | Sharks         |
+| 30 | Senators       |
+| 31 | Lightning      |
+| 32 | Ducks          |
+| 33 | Panthers       |
+| 34 | Predators      |
+| 35 | Jets           |
+| 36 | Blue Jackets   |
+| 37 | Wild           |
+| 38 | Golden Knights |
+| 39 | Kraken         |
 
     ## No encoding supplied: defaulting to UTF-8.
     ## No encoding supplied: defaulting to UTF-8.
@@ -30,39 +73,25 @@ Halid Kopanski
 ## Display Data
 
 ``` r
-df_franchise
+df_teams$teams %>% select(id, name) %>% nrow()
 ```
 
-    ## # A tibble: 39 x 2
-    ##    data$id $firstSeasonId $fullName   $lastSeasonId $mostRecentTeam… $teamAbbrev
-    ##      <int>          <int> <chr>               <int>            <int> <chr>      
-    ##  1       1       19171918 Montréal C…            NA                8 MTL        
-    ##  2       2       19171918 Montreal W…      19171918               41 MWN        
-    ##  3       3       19171918 St. Louis …      19341935               45 SLE        
-    ##  4       4       19191920 Hamilton T…      19241925               37 HAM        
-    ##  5       5       19171918 Toronto Ma…            NA               10 TOR        
-    ##  6       6       19241925 Boston Bru…            NA                6 BOS        
-    ##  7       7       19241925 Montreal M…      19371938               43 MMR        
-    ##  8       8       19251926 Brooklyn A…      19411942               51 BRK        
-    ##  9       9       19251926 Philadelph…      19301931               39 QUA        
-    ## 10      10       19261927 New York R…            NA                3 NYR        
-    ## # … with 29 more rows, and 1 more variable: total <int>
+    ## [1] 32
 
 ``` r
-df_teams
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
 ```
 
-    ## # A tibble: 32 x 2
-    ##    copyright        teams$id $name  $link  $abbreviation $teamName $locationName
-    ##    <chr>               <int> <chr>  <chr>  <chr>         <chr>     <chr>        
-    ##  1 NHL and the NHL…        1 New J… /api/… NJD           Devils    New Jersey   
-    ##  2 NHL and the NHL…        2 New Y… /api/… NYI           Islanders New York     
-    ##  3 NHL and the NHL…        3 New Y… /api/… NYR           Rangers   New York     
-    ##  4 NHL and the NHL…        4 Phila… /api/… PHI           Flyers    Philadelphia 
-    ##  5 NHL and the NHL…        5 Pitts… /api/… PIT           Penguins  Pittsburgh   
-    ##  6 NHL and the NHL…        6 Bosto… /api/… BOS           Bruins    Boston       
-    ##  7 NHL and the NHL…        7 Buffa… /api/… BUF           Sabres    Buffalo      
-    ##  8 NHL and the NHL…        8 Montr… /api/… MTL           Canadiens Montréal     
-    ##  9 NHL and the NHL…        9 Ottaw… /api/… OTT           Senators  Ottawa       
-    ## 10 NHL and the NHL…       10 Toron… /api/… TOR           Maple Le… Toronto      
-    ## # … with 22 more rows
+![](project_markdown_files/figure-gfm/datatables-1.png)<!-- -->
+
+``` r
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
+```
+
+![](project_markdown_files/figure-gfm/datatables-2.png)<!-- -->
+
+``` r
+df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
+```
+
+    ## [1] 31

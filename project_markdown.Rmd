@@ -41,37 +41,84 @@ get_db_records <- function(endpoint = NULL, modifier = NULL){
 }
 
 # This is to pull team specific information
-df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% knitr::kable()
-
 get_records <- function(team = NULL, ID = NULL){
-  
+  df_franchise_det <- get_db_records('franchise-detail')
+  df_franchise_det <- df_franchise_det$data %>% rowwise() %>%
+    mutate(short_name = tail(strsplit(teamFullName, " ")[[1]], n = 1))
     if(is.null(team) & !is.null(ID)){
-      temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
-      get_db_records(temp_string)}
+        temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
+        get_db_records(temp_string)}
     else if(!is.null(team)){
-      team_alt = tail(strsplit(team, " ")[[1]], n = 1)
-      temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
-      temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
-      get_db_records(temp_string)
-      }
+        team_alt = tail(strsplit(team, " ")[[1]], n = 1)
+        temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
+        temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
+        get_db_records(temp_string)
+    }
   }
 
+# Quick Test
 df_temp <- get_records("Maple Leafs")
-print(df_temp$data[['franchiseName']])
+df_temp$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals) %>% knitr::kable()
 ```
 
 ## Setup ID Data
 
-```{r dataframes, echo=FALSE}
-df_franchise <- get_db_records('franchise') #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
-df_fran_team_tot <- get_db_records('franchise-team-totals') #(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+```{r dataframes, echo = FALSE}
+#(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
+df_franchise <- get_db_records('franchise') 
+
+df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% knitr::kable()
+
+#(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+df_fran_team_tot <- get_db_records('franchise-team-totals')
+
+#(Admin history and retired numbers)
 df_franchise_det <- get_db_records('franchise-detail') #(Admin history and retired numbers)
+
 df_teams <- get_db_stats('teams')
+
+a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
+
+b <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% select(teamName)
+
+c <- a$fullName[!(a$fullName %in% b$fullName)]
 ```
 
 ## Display Data
 
-```{r datatables, echoe = FALSE}
-df_franchise
-df_teams
+```{r datatables, echo = FALSE}
+df_teams$teams %>% select(id, name) %>% nrow()
+
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
+df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
+
+# Combining some endpoint data
+df_fran_team_tot$data %>% ggplot(., aes(HomeWins)) + geom_histogram()
+
+df_fil_fran_tot <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% rename(abbreviation = triCode)
+df_fil_team <- df_teams$teams %>% filter(active == TRUE)
+
+df_fil_fran_tot$abbreviation %in% df_fil_team$abbreviation
+
+df_com <- df_fil_team %>% inner_join(., df_fil_fran_tot, by = 'abbreviation')
+
+df_fil_fran_tot$abbreviation
+df_fil_team$abbreviation 
+
+df_com %>% ggplot(., aes(x = conference.name, y = wins)) + geom_boxplot()
+
+df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point()
+
+df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
+
+df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wins) %>% 
+  ggplot(., aes(x = win_per_tot, y = win_per_home)) + geom_point()
+```
+
+
+## Goalie Data
+
+```{r goalie_data, echo = FALSE}
+
 ```
