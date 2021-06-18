@@ -3,34 +3,34 @@ Project 1
 Halid Kopanski
 6/14/2021
 
-    ## ── Attaching packages ─────────────────────────────────────── tidyverse 1.3.1 ──
-
-    ## ✓ ggplot2 3.3.3     ✓ purrr   0.3.4
-    ## ✓ tibble  3.1.2     ✓ dplyr   1.0.6
-    ## ✓ tidyr   1.1.3     ✓ stringr 1.4.0
-    ## ✓ readr   1.4.0     ✓ forcats 0.5.1
-
-    ## ── Conflicts ────────────────────────────────────────── tidyverse_conflicts() ──
-    ## x dplyr::filter()  masks stats::filter()
-    ## x purrr::flatten() masks jsonlite::flatten()
-    ## x dplyr::lag()     masks stats::lag()
+  - [Create data functions](#create-data-functions)
+  - [Setup ID Data](#setup-id-data)
+  - [Display Data](#display-data)
+  - [One Stop Shop Data](#one-stop-shop-data)
 
 ## Create data functions
-
-    ## No encoding supplied: defaulting to UTF-8.
-
-    ## Warning: `tbl_df()` was deprecated in dplyr 1.0.0.
-    ## Please use `tibble::as_tibble()` instead.
-
-    ## No encoding supplied: defaulting to UTF-8.
 
 | id | franchiseName       | lossStreak | winStreak | mostGoals | fewestGoals |
 | -: | :------------------ | ---------: | --------: | --------: | ----------: |
 | 10 | Toronto Maple Leafs |         10 |        10 |       337 |         147 |
 
-## Setup ID Data
+| firstName | lastName | mostSavesOneGame | gamesPlayed |
+| :-------- | :------- | ---------------: | ----------: |
+| Turk      | Broda    |               NA |         629 |
+| Johnny    | Bower    |               50 |         475 |
+| Curtis    | Joseph   |               46 |         270 |
+| Frederik  | Andersen |               54 |         268 |
+| Harry     | Lumley   |               48 |         267 |
+| Lorne     | Chabot   |               NA |         214 |
 
-    ## No encoding supplied: defaulting to UTF-8.
+|   |  0 |   1 |  2 |  3 | 4 | 5 | 6 |
+| :- | -: | --: | -: | -: | -: | -: | -: |
+| C | 55 |  77 | 60 | 36 | 9 | 1 | 2 |
+| D | 93 | 152 | 40 |  5 | 2 | 1 | 0 |
+| L | 56 |  57 | 52 | 31 | 7 | 0 | 0 |
+| R | 40 |  55 | 52 | 27 | 4 | 3 | 0 |
+
+## Setup ID Data
 
 | id | teamCommonName |
 | -: | :------------- |
@@ -67,31 +67,12 @@ Halid Kopanski
 | 38 | Golden Knights |
 | 39 | Kraken         |
 
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-
 ## Display Data
-
-``` r
-df_teams$teams %>% select(id, name) %>% nrow()
-```
 
     ## [1] 32
 
-``` r
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
-```
-
-![](project_markdown_files/figure-gfm/datatables-1.png)<!-- -->
-
-``` r
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
-```
-
-![](project_markdown_files/figure-gfm/datatables-2.png)<!-- -->
-
-``` r
-df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
-```
-
     ## [1] 31
+
+![](project_markdown_files/figure-gfm/datatables-1.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-2.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-3.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-4.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-5.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-6.png)<!-- -->![](project_markdown_files/figure-gfm/datatables-7.png)<!-- -->
+
+## One Stop Shop Data
