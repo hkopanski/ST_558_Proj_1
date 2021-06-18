@@ -1,15 +1,3 @@
----
-title: "Project 1"
-author: "Halid Kopanski"
-date: "6/14/2021"
-output:
-    github_document:
-      toc: true
-    html_document:
-      toc: true
----
-
-```{r setup, echo = FALSE, message = FALSE, error= FALSE}
 library(httr)
 library(jsonlite)
 library(tidyverse)
@@ -21,7 +9,6 @@ library(DBI)
 
 ## Create data functions
 
-```{r functions, echo = FALSE, message = FALSE, error= FALSE}
 get_db_stats <- function(endpoint = NULL, modifier = NULL){
   base <- "https://statsapi.web.nhl.com/api/v1"
   
@@ -47,15 +34,15 @@ get_records <- function(team = NULL, ID = NULL){
   df_franchise_det <- get_db_records('franchise-detail')
   df_franchise_det <- df_franchise_det$data %>% rowwise() %>%
     mutate(short_name = tail(strsplit(teamFullName, " ")[[1]], n = 1))
-    if(is.null(team) & !is.null(ID)){
-        temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
-        get_db_records(temp_string)}
-    else if(!is.null(team)){
-        team_alt = tail(strsplit(team, " ")[[1]], n = 1)
-        temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
-        temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
-        get_db_records(temp_string)
-    }
+  if(is.null(team) & !is.null(ID)){
+    temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(ID))
+    get_db_records(temp_string)}
+  else if(!is.null(team)){
+    team_alt = tail(strsplit(team, " ")[[1]], n = 1)
+    temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
+    temp_string <- paste0('franchise-season-records?cayenneExp=franchiseId=', as.character(temp_ID))
+    get_db_records(temp_string)
+  }
 }
 
 # This pulls goalie information
@@ -90,6 +77,26 @@ get_skater_data <- function(team = NULL, ID = NULL){
   }
 }
 
+# This pulls information for a specific team
+get_team_stats <- function(team = NULL, ID = NULL){
+  df_franchise_det <- get_db_records('franchise-detail')
+  df_franchise_det <- df_franchise_det$data %>% rowwise() %>%
+    mutate(short_name = tail(strsplit(teamFullName, " ")[[1]], n = 1))
+  
+  if(is.null(team) & !is.null(ID)){
+    temp_string <- paste0('teams/', as.character(ID))
+    get_db_stats(temp_string, '?expand=team.stats')}
+  
+  else if(!is.null(team)){
+    team_alt = tail(strsplit(team, " ")[[1]], n = 1)
+    temp_ID <- df_franchise_det %>% filter(toupper(short_name) == toupper(team_alt)) %>% select(id)
+    temp_string <- paste0('teams/', as.character(temp_ID))
+    get_db_stats(temp_string, '?expand=team.stats')}
+}
+
+get_team_stats(ID = 16)
+
+#####################################################################################
 get_team_stats2 <- function(team = NULL){
   df_franchise_det <- get_db_records('franchise-detail')
   df_franchise_det <- df_franchise_det$data %>% rowwise() %>%
@@ -113,7 +120,77 @@ get_team_stats2 <- function(team = NULL){
   }
 }
 
-# Quick Test
+get_team_stats2()
+
+# Exploratory analysis of the data sets
+#########################################################################################
+#(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
+df_franchise <- get_db_records('franchise') 
+
+#(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+df_fran_team_tot <- get_db_records('franchise-team-totals') 
+
+#(Drill-down into season records for a specific franchise)
+df_records <- get_db_records('franchise-season-records?cayenneExp=franchiseId=16') 
+
+#(Goalie records for the specified franchise)
+df_goalie_bruins <- get_db_records('franchise-goalie-records?cayenneExp=franchiseId=6')
+
+#(Skater records, same interaction as goalie endpoint)
+df_skater_bruins <- get_db_records('franchise-skater-records?cayenneExp=franchiseId=6')
+
+# (Franchise details, websites, etc)
+df_franchise_det <- get_db_records('franchise-detail')
+
+# Team stats
+df_teams <- get_team_stats2()
+
+# Bruin stats
+df_bruins <- get_team_stats2('bruins')
+
+# Column names of each dataset
+names(df_franchise$data)
+names(df_fran_team_tot$data)
+names(df_franchise_det$data)
+names(df_records$data) #Data for the Flyers
+names(df_goalie_bruins$data) #goalie data for the Bruins :(
+names(df_skater_bruins$data) #skater data for the Bruins
+names(df_teams$teams)
+names(df_bruins$teams$teamStats)
+
+a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
+
+b <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% select(teamName)
+
+c <- a$fullName[!(a$fullName %in% b$teamName)]
+
+# c is the extra team that is not in the franchise data
+
+
+# Some data visualizations from combining stats and franchise totals
+df_fil_fran_tot <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% 
+  rename(abbreviation = triCode)
+
+df_fil_team <- df_teams$teams %>% filter(active == TRUE)
+
+df_fil_fran_tot$abbreviation %in% df_fil_team$abbreviation
+
+df_com <- df_fil_team %>% inner_join(., df_fil_fran_tot, by = 'abbreviation')
+
+df_com %>% ggplot(., aes(x = conference.name, y = wins)) + geom_boxplot()
+
+df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point()
+
+df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
+
+df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wins) %>% 
+  ggplot(., aes(x = win_per_tot, y = win_per_home)) + geom_point()
+#########################################################################################
+
+get_db_stats('teams/16', '?expand=team.stats')
+
+#########################################################################################
+# Quick Test of skater and goalie functions
 df_temp_goalie <- get_goalie_data("Maple Leafs")
 df_temp_skater <- get_skater_data("Maple Leafs")
 df_temp <- get_records("Maple Leafs")
@@ -128,75 +205,3 @@ df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlaye
 
 #names(df_temp_skater$data)
 df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% knitr::kable()
-```
-
-## Setup ID Data
-
-```{r dataframes, echo = FALSE, message = FALSE, error= FALSE}
-#(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
-df_franchise <- get_db_records('franchise') 
-
-df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% knitr::kable()
-
-#(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
-df_fran_team_tot <- get_db_records('franchise-team-totals')
-
-#(Admin history and retired numbers)
-df_franchise_det <- get_db_records('franchise-detail') #(Admin history and retired numbers)
-
-df_teams <- get_db_stats('teams')
-
-a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
-
-b <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% select(teamName)
-
-c <- a$fullName[!(a$fullName %in% b$fullName)]
-```
-
-## Display Data
-
-```{r datatables, echo = FALSE, message = FALSE, error= FALSE}
-df_teams$teams %>% select(id, name) %>% nrow()
-df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
-
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
-
-# Combining some endpoint data
-df_fran_team_tot$data %>% ggplot(., aes(homeWins)) + geom_histogram(binwidth = 10)
-
-df_fil_fran_tot <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% rename(abbreviation = triCode)
-df_fil_team <- df_teams$teams %>% filter(active == TRUE)
-
-#df_fil_fran_tot$abbreviation %in% df_fil_team$abbreviation
-
-df_com <- df_fil_team %>% inner_join(., df_fil_fran_tot, by = 'abbreviation')
-
-df_com %>% ggplot(., aes(x = conference.name, y = wins)) + geom_boxplot()
-
-df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point()
-
-df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
-
-df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wins) %>% 
-  ggplot(., aes(x = win_per_tot, y = win_per_home)) + geom_point()
-```
-
-
-## One Stop Shop Data
-
-```{r goalie_data, echo = FALSE, message = FALSE, error= FALSE}
-
-df_team <- get_db_stats('teams')
-df_franchise <- get_db_records('franchise')
-
-grab_all <- function(team = NULL, ID = NULL){
-
-  df_temp_goalie <- get_goalie_data(team)
-  df_temp_skater <- get_skater_data(team)
-  df_team_data <- get_records(team)
-  
-  
-}
-
-```
