@@ -9,7 +9,9 @@ output:
       toc: true
 ---
 
-```{r setup, echo = FALSE, message = FALSE, error= FALSE}
+## Set up of API Script
+
+```{r setup, message = FALSE, error= FALSE}
 library(httr)
 library(jsonlite)
 library(tidyverse)
@@ -22,13 +24,29 @@ library(knitr)
 
 ## Create data functions
 
-```{r functions, echo = FALSE, message = FALSE, error= FALSE}
+The following functions pull data from two sources:
+
+https://statsapi.web.nhl.com/api/v1
+
+and 
+
+https://records.nhl.com/site/api
+
+The data can be parsed during the request using modifiers or it can be parsed afterwards. There are 6 functions in this section:
+
+get_db_stats: to pull teams data from statsapi.web.nhl.com
+get_db_records: to pull franchise data from records.nhl.com
+get_records: to pull franchise details data from records.nhl.com
+
+
+
+```{r functions, message = FALSE, error= FALSE}
 get_db_stats <- function(endpoint = NULL, modifier = NULL){
   base <- "https://statsapi.web.nhl.com/api/v1"
   
   URL <- paste0(base, "/" , endpoint, modifier)
   temp_con <- GET(URL)
-  temp_text <- content(temp_con, "text")
+  temp_text <- content(temp_con, "text", encoding = "UTF-8")
   temp_JSON <- fromJSON(temp_text, flatten = TRUE)
   return(as_tibble(temp_JSON))
 }
@@ -38,7 +56,7 @@ get_db_records <- function(endpoint = NULL, modifier = NULL){
   
   URL <- paste0(base, "/" , endpoint, modifier)
   temp_con <- GET(URL)
-  temp_text <- content(temp_con, "text")
+  temp_text <- content(temp_con, "text", encoding = "UTF-8")
   temp_JSON <- fromJSON(temp_text, flatten = TRUE)
   return(as_tibble(temp_JSON))
 }
@@ -116,6 +134,8 @@ get_team_stats2 <- function(team = NULL){
 ```
 
 ## Exploratory Data Analysis
+
+The functions developed in the prior section will be used to connect to and to pull data from the NHL API service. 
 
 ```{r explore, echo = FALSE}
 # Exploratory analysis of the data sets
@@ -196,8 +216,19 @@ c <- a$fullName[!(a$fullName %in% b$fullName)]
 df_teams$teams %>% select(id, name) %>% nrow()
 df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
 
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
+df_teams$teams %>% filter(active == TRUE) %>% 
+  ggplot(. ,aes(conference.name, fill = as.factor(division.id))) + geom_bar() + 
+  labs(x = "Conference ID", y = "Count") + 
+  scale_fill_discrete(name = "Divisions", 
+                      labels = c("MassMutual East", 
+                                 "Discover Central",
+                                 "Honda West",
+                                 "Scotia North"))
+
+df_teams$teams %>% filter(active == TRUE) %>% 
+  ggplot(. ,aes(firstYearOfPlay)) + geom_bar(aes(fill = conference.name)) + 
+  labs(x = "First Year of Play", y = "Count") +
+  scale_fill_discrete(name = "Conference")
 
 # Combining some endpoint data
 df_fran_team_tot$data %>% ggplot(., aes(homeWins)) + geom_histogram(binwidth = 10)
@@ -209,9 +240,12 @@ df_fil_team <- df_teams$teams %>% filter(active == TRUE)
 
 df_com <- df_fil_team %>% inner_join(., df_fil_fran_tot, by = 'abbreviation')
 
-df_com %>% ggplot(., aes(x = conference.name, y = wins)) + geom_boxplot()
+df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot(fill = "gray") +
+  labs(title = "Distribution of Wins Betwen the Conferences", 
+       x = "Conference Name", y = "Number of Wins") + facet_grid(cols = vars(conference.name)) 
 
-df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point()
+df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point() +
+  labs(title = "Percentage Points Versus NHL Team", x = "NHL Teams (abbr)", y = "Point Pctg")
 
 df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
 

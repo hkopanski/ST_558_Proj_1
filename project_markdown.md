@@ -10,18 +10,20 @@ Halid Kopanski
   - [Display Data](#display-data)
   - [One Stop Shop Data](#one-stop-shop-data)
 
+``` r
+library(httr)
+library(jsonlite)
+library(tidyverse)
+library(DT)
+library(RSQLite)
+library(bigrquery)
+library(DBI)
+library(knitr)
+```
+
 ## Create data functions
 
 ## Exploratory Data Analysis
-
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
 
     ## [1] "id"               "firstSeasonId"    "fullName"         "lastSeasonId"    
     ## [5] "mostRecentTeamId" "teamAbbrev"       "teamCommonName"   "teamPlaceName"
@@ -120,21 +122,9 @@ Halid Kopanski
 
 ## Team Specific Information
 
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-
 | id | franchiseName       | lossStreak | winStreak | mostGoals | fewestGoals |
 | -: | :------------------ | ---------: | --------: | --------: | ----------: |
 | 10 | Toronto Maple Leafs |         10 |        10 |       337 |         147 |
-
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
-    ## No encoding supplied: defaulting to UTF-8.
 
     ##  [1] "id"                      "activePlayer"           
     ##  [3] "firstName"               "franchiseId"            

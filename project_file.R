@@ -131,7 +131,7 @@ df_franchise <- get_db_records('franchise')
 df_fran_team_tot <- get_db_records('franchise-team-totals') 
 
 #(Drill-down into season records for a specific franchise)
-df_records <- get_db_records('franchise-season-records?cayenneExp=franchiseId=16') 
+df_records <- get_db_records('franchise-season-records', '?cayenneExp=franchiseId=16') 
 
 #(Goalie records for the specified franchise)
 df_goalie_bruins <- get_db_records('franchise-goalie-records?cayenneExp=franchiseId=6')
@@ -163,8 +163,19 @@ names(df_bruins$teams$teamStats)
 df_teams$teams %>% select(id, name) %>% nrow()
 df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
 
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
-df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
+df_teams$teams %>% filter(active == TRUE) %>% 
+  ggplot(. ,aes(conference.name, fill = as.factor(division.id))) + geom_bar() + 
+  labs(x = "Conference ID", y = "Count") + 
+  scale_fill_discrete(name = "Divisions", 
+                      labels = c("MassMutual East", 
+                                 "Discover Central",
+                                 "Honda West",
+                                 "Scotia North"))
+
+df_teams$teams %>% filter(active == TRUE) %>% 
+  ggplot(. ,aes(firstYearOfPlay)) + geom_bar(aes(fill = conference.name)) + 
+  labs(x = "First Year of Play", y = "Count") +
+  scale_fill_discrete(name = "Conference")
 
 a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
 
@@ -183,9 +194,12 @@ df_fil_fran_tot$abbreviation %in% df_fil_team$abbreviation
 
 df_com <- df_fil_team %>% inner_join(., df_fil_fran_tot, by = 'abbreviation')
 
-df_com %>% ggplot(., aes(x = conference.name, y = wins)) + geom_boxplot()
+df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot(fill = "gray") +
+  labs(title = "Distribution of Wins Betwen the Conferences", 
+       x = "Conference Name", y = "Number of Wins") + facet_grid(cols = vars(conference.name)) 
 
-df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point()
+df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point() +
+  labs(title = "Percentage Points Versus NHL Team", x = "NHL Teams (abbr)", y = "Point Pctg")
 
 df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
 
@@ -211,30 +225,37 @@ df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlaye
 df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% knitr::kable()
 
 ######################################################################################
-df_bruins %>% knitr::kable()
+rmarkdown::render(df_bruins, output_file = 'df_bruins.md')
 
 
 ######################################################################################
 
 grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater = FALSE){
-  df_franchise <- get_db_records('franchise') 
-  df_fran_team_tot <- get_db_records('franchise-team-totals') 
+  if(all == TRUE){
+    df_franchise <- get_db_records('franchise') 
+    df_fran_team_tot <- get_db_records('franchise-team-totals')
+  } 
+ 
+  if(!is.null(team)){
+    df_team_data <- get_records(team)
+    df_team_records <- 
+    df_team_stats <- get_team_stats2(team)
+  }
+  if(goalie == TRUE){
+    if_temp_goalie <- get_goalie_data(team)
+  }
+  if(skater == TRUE){
+    df_temp_skater <- get_skater_data(team)
+  }
   
-  #knitr::kable(df_franchise)
-  #knitr::kable(df_fran_team_tot)
+  df_list <- list(df_franchise, df_fran_team_tot, df_temp_goalie, df_temp_skater, df_team_data, df_team_stats)
   
-  df_temp_goalie <- get_goalie_data(team)
-  df_temp_skater <- get_skater_data(team)
-  df_team_data <- get_records(team)
-  df_team_stats <- get_team_stats2(team)
-  
-  df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
-    arrange(desc(gamesPlayed)) %>% head() %>% print()
-  
-  df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% print()
-  
-  df_team_stats %>% select(1:5) %>% print()
-  df_team_data$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals) %>% knitr::kable()
+  return(df_list)
 }
 
-grab_all(all = TRUE, team = 'stars')
+df_test <- grab_all(all = TRUE, team = 'stars')
+#########################################################################################
+
+# https://records.nhl.com/site/api/franchise-season-records?cayenneExp=franchiseId=16
+
+db_records_flyers <- get_db_records('franchise-season-records', '?cayenneExp=franchiseId=16')
