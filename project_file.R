@@ -5,7 +5,6 @@ library(DT)
 library(RSQLite)
 library(bigrquery)
 library(DBI)
-```
 
 ## Create data functions
 
@@ -120,6 +119,7 @@ get_team_stats2 <- function(team = NULL){
   }
 }
 
+#This will pull in all the teams
 get_team_stats2()
 
 # Exploratory analysis of the data sets
@@ -158,14 +158,20 @@ names(df_skater_bruins$data) #skater data for the Bruins
 names(df_teams$teams)
 names(df_bruins$teams$teamStats)
 
+#########################################################################################
+# There are 32 teams, but one is a new expansion team and not active. 
+df_teams$teams %>% select(id, name) %>% nrow()
+df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
+
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(conference.id)) + geom_bar()
+df_teams$teams %>% filter(active == TRUE) %>% ggplot(. ,aes(firstYearOfPlay)) + geom_bar()
+
 a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
 
 b <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% select(teamName)
 
-c <- a$fullName[!(a$fullName %in% b$teamName)]
-
 # c is the extra team that is not in the franchise data
-
+c <- a$fullName[!(a$fullName %in% b$teamName)]
 
 # Some data visualizations from combining stats and franchise totals
 df_fil_fran_tot <- df_fran_team_tot$data %>% filter(is.na(lastSeasonId) & gameTypeId == 2) %>% 
@@ -185,9 +191,6 @@ df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot()
 
 df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wins) %>% 
   ggplot(., aes(x = win_per_tot, y = win_per_home)) + geom_point()
-#########################################################################################
-
-get_db_stats('teams/16', '?expand=team.stats')
 
 #########################################################################################
 # Quick Test of skater and goalie functions
@@ -196,12 +199,42 @@ df_temp_skater <- get_skater_data("Maple Leafs")
 df_temp <- get_records("Maple Leafs")
 df_temp$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals) %>% knitr::kable()
 
-#names(df_temp_goalie$data)
 df_temp_goalie <- get_goalie_data("Maple Leafs")
 df_temp_skater <- get_skater_data("Maple Leafs")
+
+#names(df_temp_goalie$data)
+#names(df_temp_skater$data)
 
 df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
   arrange(desc(gamesPlayed)) %>% head() %>% knitr::kable()
 
-#names(df_temp_skater$data)
 df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% knitr::kable()
+
+######################################################################################
+df_bruins %>% knitr::kable()
+
+
+######################################################################################
+
+grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater = FALSE){
+  df_franchise <- get_db_records('franchise') 
+  df_fran_team_tot <- get_db_records('franchise-team-totals') 
+  
+  #knitr::kable(df_franchise)
+  #knitr::kable(df_fran_team_tot)
+  
+  df_temp_goalie <- get_goalie_data(team)
+  df_temp_skater <- get_skater_data(team)
+  df_team_data <- get_records(team)
+  df_team_stats <- get_team_stats2(team)
+  
+  df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
+    arrange(desc(gamesPlayed)) %>% head() %>% print()
+  
+  df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% print()
+  
+  df_team_stats %>% select(1:5) %>% print()
+  df_team_data$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals) %>% knitr::kable()
+}
+
+grab_all(all = TRUE, team = 'stars')

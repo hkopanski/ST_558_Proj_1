@@ -17,6 +17,7 @@ library(DT)
 library(RSQLite)
 library(bigrquery)
 library(DBI)
+library(knitr)
 ```
 
 ## Create data functions
@@ -112,7 +113,51 @@ get_team_stats2 <- function(team = NULL){
     return(get_db_stats('teams'))
   }
 }
+```
 
+## Exploratory Data Analysis
+
+```{r explore, echo = FALSE}
+# Exploratory analysis of the data sets
+#########################################################################################
+#(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
+df_franchise <- get_db_records('franchise') 
+
+#(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
+df_fran_team_tot <- get_db_records('franchise-team-totals') 
+
+#(Drill-down into season records for a specific franchise)
+df_records <- get_db_records('franchise-season-records?cayenneExp=franchiseId=16') 
+
+#(Goalie records for the specified franchise)
+df_goalie_bruins <- get_db_records('franchise-goalie-records?cayenneExp=franchiseId=6')
+
+#(Skater records, same interaction as goalie endpoint)
+df_skater_bruins <- get_db_records('franchise-skater-records?cayenneExp=franchiseId=6')
+
+# (Franchise details, websites, etc)
+df_franchise_det <- get_db_records('franchise-detail')
+
+# Team stats
+df_teams <- get_team_stats2()
+
+# Bruin stats
+df_bruins <- get_team_stats2('bruins')
+
+# Column names of each dataset
+names(df_franchise$data)
+names(df_fran_team_tot$data)
+names(df_franchise_det$data)
+names(df_records$data) #Data for the Flyers
+names(df_goalie_bruins$data) #goalie data for the Bruins :(
+names(df_skater_bruins$data) #skater data for the Bruins
+names(df_teams$teams)
+names(df_bruins$teams$teamStats)
+```
+
+## Team Specific Information
+
+```{r, echo = FALSE}
 # Quick Test
 df_temp_goalie <- get_goalie_data("Maple Leafs")
 df_temp_skater <- get_skater_data("Maple Leafs")
@@ -123,10 +168,12 @@ df_temp$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, few
 df_temp_goalie <- get_goalie_data("Maple Leafs")
 df_temp_skater <- get_skater_data("Maple Leafs")
 
+names(df_temp_goalie$data)
+names(df_temp_skater$data)
+
 df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
   arrange(desc(gamesPlayed)) %>% head() %>% knitr::kable()
 
-#names(df_temp_skater$data)
 df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% knitr::kable()
 ```
 
@@ -134,17 +181,7 @@ df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table() %>% k
 
 ```{r dataframes, echo = FALSE, message = FALSE, error= FALSE}
 #(Returns id, firstSeasonId and lastSeasonId and name of every team in the history of the NHL)
-df_franchise <- get_db_records('franchise') 
-
 df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, teamCommonName) %>% knitr::kable()
-
-#(Returns Total stats for every franchise (ex roadTies, roadWins, etc))
-df_fran_team_tot <- get_db_records('franchise-team-totals')
-
-#(Admin history and retired numbers)
-df_franchise_det <- get_db_records('franchise-detail') #(Admin history and retired numbers)
-
-df_teams <- get_db_stats('teams')
 
 a <- df_franchise$data %>% filter(is.na(lastSeasonId)) %>% select(id, fullName)
 
@@ -155,7 +192,7 @@ c <- a$fullName[!(a$fullName %in% b$fullName)]
 
 ## Display Data
 
-```{r datatables, echo = FALSE, message = FALSE, error= FALSE}
+```{r datatables, echo = FALSE, message = FALSE, error = FALSE}
 df_teams$teams %>% select(id, name) %>% nrow()
 df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
 
@@ -185,18 +222,31 @@ df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wi
 
 ## One Stop Shop Data
 
-```{r goalie_data, echo = FALSE, message = FALSE, error= FALSE}
+```{r one_stop, echo = FALSE, message = FALSE, error= FALSE}
 
-df_team <- get_db_stats('teams')
-df_franchise <- get_db_records('franchise')
-
-grab_all <- function(team = NULL, ID = NULL){
-
+grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater = FALSE){
+  df_franchise <- get_db_records('franchise') 
+  df_fran_team_tot <- get_db_records('franchise-team-totals') 
   df_temp_goalie <- get_goalie_data(team)
   df_temp_skater <- get_skater_data(team)
   df_team_data <- get_records(team)
+  df_team_stats <- get_team_stats2(team)
   
+  a <- df_franchise$data %>% select(1:5) %>% head()
+  b <- df_fran_team_tot$data %>% select(1:5) %>% head()
   
+  c <- df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
+    arrange(desc(gamesPlayed)) %>% head()
+  
+  d <- df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table()
+  
+  e <- df_team_stats %>% select(1:5)
+  f <- df_team_data$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals)
+  
+  thing <- list(a,b,c,d,e,f)
+  
+  kable(thing)
 }
 
+grab_all(all = TRUE, team = 'stars')
 ```
