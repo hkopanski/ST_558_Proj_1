@@ -259,3 +259,15 @@ df_test <- grab_all(all = TRUE, team = 'stars')
 # https://records.nhl.com/site/api/franchise-season-records?cayenneExp=franchiseId=16
 
 db_records_flyers <- get_db_records('franchise-season-records', '?cayenneExp=franchiseId=16')
+############################################################################################
+df_com %>% mutate(win_per_home = homeWins / wins) %>% 
+  ggplot(., aes(win_per_home)) + geom_histogram(aes(y = ..density..), bins = 15) + 
+  geom_density(adjust = 0.4, color = 'red', size = 0.25, outline.type = 'full')
+
+df_com$win_per_home <- df_com$homeWins / df_com$wins
+
+df_com %>% ggplot(., aes(win_per_home)) + geom_histogram(bins = 10)
+
+
+df_fran_team_tot$data %>% ggplot(., aes(homeWins)) + geom_histogram(aes(y = ..density..), bins = 15) + 
+  geom_density(adjust = 0.4, color = 'red', size = 0.25, outline.type = 'full')

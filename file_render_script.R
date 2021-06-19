@@ -1,0 +1,1 @@
+rmarkdown::render("project_markdown_alt.Rmd", github_document(toc = TRUE, toc_depth = 3))
