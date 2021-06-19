@@ -1,15 +1,16 @@
 ---
 title: "Project 1"
-author: "Halid Kopanski"
-date: "6/14/2021"
 output:
-    github_document:
-      toc: true
-    html_document:
+   html_document:
       toc: true
 ---
 
+## Link to repo
+
+[GIT repo](https://github.com/hkopanski/ST_558_Proj_1)
+
 ## Set up of API Script
+The following libraries are used in this script
 
 ```{r setup, message = FALSE, error= FALSE}
 library(httr)
@@ -33,12 +34,12 @@ https://records.nhl.com/site/api
 
 The data can be parsed during the request using modifiers or it can be parsed afterwards. There are 6 functions in this section:
 
-get_db_stats: to pull teams data from statsapi.web.nhl.com
-get_db_records: to pull franchise data from records.nhl.com
-get_records: to pull franchise details data from records.nhl.com
-get_goalie_data: pull goalie stats for a particular team
-get_skater_data: pull skater stats for a particular team
-get_team_stats2: pull team stats for a specific team
+- get_db_stats: to pull teams data from statsapi.web.nhl.com
+- get_db_records: to pull franchise data from records.nhl.com
+- get_records: to pull franchise details data from records.nhl.com
+- get_goalie_data: pull goalie stats for a particular team
+- get_skater_data: pull skater stats for a particular team
+- get_team_stats2: pull team stats for a specific team
 
 All functions output the data in the form of a tibble.
 
@@ -178,14 +179,14 @@ names(df_records$data) #Data for the Flyers
 names(df_goalie_bruins$data) #goalie data for the Bruins :(
 names(df_skater_bruins$data) #skater data for the Bruins
 names(df_teams$teams)
-names(df_bruins$teams$teamStats)
+names(df_bruins)
 ```
 
 ## Team Specific Information
 
 Here is a few test scenarios for a handful of team specific datasets. 
 
-```{r, echo = FALSE}
+```{r}
 # Quick Test
 df_temp_goalie <- get_goalie_data("Maple Leafs")
 df_temp_skater <- get_skater_data("Maple Leafs")
@@ -202,7 +203,7 @@ names(df_temp_skater$data)
 
 Creating some stats and frequency tables.
 
-```{r]}
+```{r}
 df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
   arrange(desc(gamesPlayed)) %>% head() %>% knitr::kable()
 
@@ -229,7 +230,7 @@ print(c)
 
 The following is an example of how to parse and join different data sets and to visualize the data. From the charts, it can be seen that conferences are not based on divisions. Also, that the eastern conference seemed to have formed sooner than the western.
 
-```{r datatables, echo = FALSE, message = FALSE, error = FALSE}
+```{r datatables, message = FALSE, error = FALSE}
 df_teams$teams %>% select(id, name) %>% nrow()
 df_teams$teams %>% filter(active == TRUE) %>% select(id, name) %>% nrow()
 
@@ -299,34 +300,71 @@ df_com %>% mutate(win_per_home = homeWins / wins) %>%
   labs(x = "Home Wins Percentage", title = "Histogram of Home Wins as a Percentage of Total Wins")
 ```
 
-
 ## One Stop Shop Data
 
-```{r one_stop, echo = FALSE, message = FALSE, error= FALSE}
+If one does not want to run individual functions the grab_all function can be run instead. The function uses 5 arguments: 
+- all: to return all nhl data 
+- team: to return specific team data 
+- ID: same as team but uses the ID number instead 
+- goalie: to return goalie information 
+- skater: to return skater information. 
+- The output for the function is a named list containing all the desired information.  <Font color = red>**WARNING** Named list can be large! </font>.
+
+```{r one_stop, message = FALSE, error= FALSE}
 
 grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater = FALSE){
-  df_franchise <- get_db_records('franchise') 
-  df_fran_team_tot <- get_db_records('franchise-team-totals') 
-  df_temp_goalie <- get_goalie_data(team)
-  df_temp_skater <- get_skater_data(team)
-  df_team_data <- get_records(team)
-  df_team_stats <- get_team_stats2(team)
+  if(all == TRUE){
+    df_franchise <- get_db_records('franchise') 
+    df_fran_team_tot <- get_db_records('franchise-team-totals')
+  } else if(all == FALSE) {
+    df_franchise <- NULL
+    df_fran_team_tot <- NULL}
+ 
+  if(!is.null(team) & is.null(ID)){
+    df_team_data <- get_records(team)
+    df_team_stats <- get_team_stats2(team)
+  } else if(is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(ID = ID)
+    df_team_stats <- get_team_stats2(ID)
+  } else if(!is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(team)
+    df_team_stats <- get_team_stats2(team)
+  } else if(is.null(team) & is.null(ID)) {
+    df_team_data <- NULL
+    df_team_stats <- NULL
+  }
   
-  a <- df_franchise$data %>% select(1:5) %>% head()
-  b <- df_fran_team_tot$data %>% select(1:5) %>% head()
+  if(goalie == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_goalie <- get_goalie_data(ID = ID)
+  } else if(goalie == TRUE & is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == FALSE){
+    df_temp_goalie <- NULL
+  }
   
-  c <- df_temp_goalie$data %>% select(firstName, lastName, mostSavesOneGame, gamesPlayed) %>% 
-    arrange(desc(gamesPlayed)) %>% head()
+  if(skater == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_skater <- get_skater_data(ID = ID)
+  } else if(skater == TRUE & is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == FALSE){
+    df_temp_skater <- NULL
+  }
   
-  d <- df_temp_skater$data %>% select(positionCode, mostGoalsOneGame) %>% table()
+  df_list <- list("franchises" = df_franchise, "team total" = df_fran_team_tot, 
+                  "goalie information" = df_temp_goalie, 
+                  "skater information" = df_temp_skater, 
+                  "team data" = df_team_data, 
+                  "team stats" = df_team_stats)
   
-  e <- df_team_stats %>% select(1:5)
-  f <- df_team_data$data %>% select(id, franchiseName, lossStreak, winStreak, mostGoals, fewestGoals)
+  df_list <- df_list[-which(sapply(df_list, is.null))]
   
-  thing <- list(a,b,c,d,e,f)
-  
-  kable(thing)
+  return(df_list)
 }
 
+# Test grab_all function
 grab_all(all = TRUE, team = 'stars')
 ```

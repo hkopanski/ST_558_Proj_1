@@ -156,7 +156,7 @@ names(df_records$data) #Data for the Flyers
 names(df_goalie_bruins$data) #goalie data for the Bruins :(
 names(df_skater_bruins$data) #skater data for the Bruins
 names(df_teams$teams)
-names(df_bruins$teams$teamStats)
+names(df_bruins)
 
 #########################################################################################
 # There are 32 teams, but one is a new expansion team and not active. 
@@ -234,26 +234,56 @@ grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater
   if(all == TRUE){
     df_franchise <- get_db_records('franchise') 
     df_fran_team_tot <- get_db_records('franchise-team-totals')
-  } 
+  } else if(all == FALSE) {
+    df_franchise <- NULL
+    df_fran_team_tot <- NULL}
  
-  if(!is.null(team)){
+  if(!is.null(team) & is.null(ID)){
     df_team_data <- get_records(team)
-    df_team_records <- 
     df_team_stats <- get_team_stats2(team)
-  }
-  if(goalie == TRUE){
-    if_temp_goalie <- get_goalie_data(team)
-  }
-  if(skater == TRUE){
-    df_temp_skater <- get_skater_data(team)
+  } else if(is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(ID = ID)
+    df_team_stats <- get_team_stats2(ID)
+  } else if(!is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(team)
+    df_team_stats <- get_team_stats2(team)
+  } else if(is.null(team) & is.null(ID)) {
+    df_team_data <- NULL
+    df_team_stats <- NULL
   }
   
-  df_list <- list(df_franchise, df_fran_team_tot, df_temp_goalie, df_temp_skater, df_team_data, df_team_stats)
+  if(goalie == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_goalie <- get_goalie_data(ID = ID)
+  } else if(goalie == TRUE & is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == FALSE){
+    df_temp_goalie <- NULL
+  }
+  
+  if(skater == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_skater <- get_skater_data(ID = ID)
+  } else if(skater == TRUE & is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == FALSE){
+    df_temp_skater <- NULL
+  }
+  
+  df_list <- list("franchises" = df_franchise, "team total" = df_fran_team_tot, 
+                  "goalie information" = df_temp_goalie, 
+                  "skater information" = df_temp_skater, 
+                  "team data" = df_team_data, 
+                  "team stats" = df_team_stats)
+  
+  df_list <- df_list[-which(sapply(df_list, is.null))]
   
   return(df_list)
 }
 
-df_test <- grab_all(all = TRUE, team = 'stars')
+df_test <- grab_all(ID = 15, skater = TRUE)
 #########################################################################################
 
 # https://records.nhl.com/site/api/franchise-season-records?cayenneExp=franchiseId=16
