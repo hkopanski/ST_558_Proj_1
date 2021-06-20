@@ -1,17 +1,13 @@
 Project 1
 ================
-Halid Kopanski
-6/14/2021
 
-  - [Set up of API Script](#set-up-of-api-script)
-  - [Create data functions](#create-data-functions)
-  - [Exploratory Data Analysis](#exploratory-data-analysis)
-  - [Team Specific Information](#team-specific-information)
-  - [Setup ID Data](#setup-id-data)
-  - [Display Data](#display-data)
-  - [One Stop Shop Data](#one-stop-shop-data)
+## Link to repo
+
+[GIT repo](https://github.com/hkopanski/ST_558_Proj_1)
 
 ## Set up of API Script
+
+The following libraries are used in this script
 
 ``` r
 library(httr)
@@ -152,144 +148,100 @@ sets for a particular team, one was chosen at random.
 names(df_franchise$data)
 ```
 
-    ## [1] "id"               "firstSeasonId"    "fullName"         "lastSeasonId"    
-    ## [5] "mostRecentTeamId" "teamAbbrev"       "teamCommonName"   "teamPlaceName"
+    ## [1] "id"               "firstSeasonId"    "fullName"         "lastSeasonId"     "mostRecentTeamId" "teamAbbrev"      
+    ## [7] "teamCommonName"   "teamPlaceName"
 
 ``` r
 names(df_fran_team_tot$data)
 ```
 
-    ##  [1] "id"                 "activeFranchise"    "firstSeasonId"     
-    ##  [4] "franchiseId"        "gameTypeId"         "gamesPlayed"       
-    ##  [7] "goalsAgainst"       "goalsFor"           "homeLosses"        
-    ## [10] "homeOvertimeLosses" "homeTies"           "homeWins"          
-    ## [13] "lastSeasonId"       "losses"             "overtimeLosses"    
-    ## [16] "penaltyMinutes"     "pointPctg"          "points"            
-    ## [19] "roadLosses"         "roadOvertimeLosses" "roadTies"          
-    ## [22] "roadWins"           "shootoutLosses"     "shootoutWins"      
-    ## [25] "shutouts"           "teamId"             "teamName"          
-    ## [28] "ties"               "triCode"            "wins"
+    ##  [1] "id"                 "activeFranchise"    "firstSeasonId"      "franchiseId"        "gameTypeId"         "gamesPlayed"       
+    ##  [7] "goalsAgainst"       "goalsFor"           "homeLosses"         "homeOvertimeLosses" "homeTies"           "homeWins"          
+    ## [13] "lastSeasonId"       "losses"             "overtimeLosses"     "penaltyMinutes"     "pointPctg"          "points"            
+    ## [19] "roadLosses"         "roadOvertimeLosses" "roadTies"           "roadWins"           "shootoutLosses"     "shootoutWins"      
+    ## [25] "shutouts"           "teamId"             "teamName"           "ties"               "triCode"            "wins"
 
 ``` r
 names(df_franchise_det$data)
 ```
 
-    ##  [1] "id"                    "active"                "captainHistory"       
-    ##  [4] "coachingHistory"       "dateAwarded"           "directoryUrl"         
-    ##  [7] "firstSeasonId"         "generalManagerHistory" "heroImageUrl"         
-    ## [10] "mostRecentTeamId"      "retiredNumbersSummary" "teamAbbrev"           
-    ## [13] "teamFullName"
+    ##  [1] "id"                    "active"                "captainHistory"        "coachingHistory"       "dateAwarded"          
+    ##  [6] "directoryUrl"          "firstSeasonId"         "generalManagerHistory" "heroImageUrl"          "mostRecentTeamId"     
+    ## [11] "retiredNumbersSummary" "teamAbbrev"            "teamFullName"
 
 ``` r
 names(df_records$data) #Data for the Flyers
 ```
 
-    ##  [1] "id"                        "fewestGoals"              
-    ##  [3] "fewestGoalsAgainst"        "fewestGoalsAgainstSeasons"
-    ##  [5] "fewestGoalsSeasons"        "fewestLosses"             
-    ##  [7] "fewestLossesSeasons"       "fewestPoints"             
-    ##  [9] "fewestPointsSeasons"       "fewestTies"               
-    ## [11] "fewestTiesSeasons"         "fewestWins"               
-    ## [13] "fewestWinsSeasons"         "franchiseId"              
-    ## [15] "franchiseName"             "homeLossStreak"           
-    ## [17] "homeLossStreakDates"       "homePointStreak"          
-    ## [19] "homePointStreakDates"      "homeWinStreak"            
-    ## [21] "homeWinStreakDates"        "homeWinlessStreak"        
-    ## [23] "homeWinlessStreakDates"    "lossStreak"               
-    ## [25] "lossStreakDates"           "mostGameGoals"            
-    ## [27] "mostGameGoalsDates"        "mostGoals"                
-    ## [29] "mostGoalsAgainst"          "mostGoalsAgainstSeasons"  
-    ## [31] "mostGoalsSeasons"          "mostLosses"               
-    ## [33] "mostLossesSeasons"         "mostPenaltyMinutes"       
-    ## [35] "mostPenaltyMinutesSeasons" "mostPoints"               
-    ## [37] "mostPointsSeasons"         "mostShutouts"             
-    ## [39] "mostShutoutsSeasons"       "mostTies"                 
-    ## [41] "mostTiesSeasons"           "mostWins"                 
-    ## [43] "mostWinsSeasons"           "pointStreak"              
-    ## [45] "pointStreakDates"          "roadLossStreak"           
-    ## [47] "roadLossStreakDates"       "roadPointStreak"          
-    ## [49] "roadPointStreakDates"      "roadWinStreak"            
-    ## [51] "roadWinStreakDates"        "roadWinlessStreak"        
-    ## [53] "roadWinlessStreakDates"    "winStreak"                
-    ## [55] "winStreakDates"            "winlessStreak"            
+    ##  [1] "id"                        "fewestGoals"               "fewestGoalsAgainst"        "fewestGoalsAgainstSeasons"
+    ##  [5] "fewestGoalsSeasons"        "fewestLosses"              "fewestLossesSeasons"       "fewestPoints"             
+    ##  [9] "fewestPointsSeasons"       "fewestTies"                "fewestTiesSeasons"         "fewestWins"               
+    ## [13] "fewestWinsSeasons"         "franchiseId"               "franchiseName"             "homeLossStreak"           
+    ## [17] "homeLossStreakDates"       "homePointStreak"           "homePointStreakDates"      "homeWinStreak"            
+    ## [21] "homeWinStreakDates"        "homeWinlessStreak"         "homeWinlessStreakDates"    "lossStreak"               
+    ## [25] "lossStreakDates"           "mostGameGoals"             "mostGameGoalsDates"        "mostGoals"                
+    ## [29] "mostGoalsAgainst"          "mostGoalsAgainstSeasons"   "mostGoalsSeasons"          "mostLosses"               
+    ## [33] "mostLossesSeasons"         "mostPenaltyMinutes"        "mostPenaltyMinutesSeasons" "mostPoints"               
+    ## [37] "mostPointsSeasons"         "mostShutouts"              "mostShutoutsSeasons"       "mostTies"                 
+    ## [41] "mostTiesSeasons"           "mostWins"                  "mostWinsSeasons"           "pointStreak"              
+    ## [45] "pointStreakDates"          "roadLossStreak"            "roadLossStreakDates"       "roadPointStreak"          
+    ## [49] "roadPointStreakDates"      "roadWinStreak"             "roadWinStreakDates"        "roadWinlessStreak"        
+    ## [53] "roadWinlessStreakDates"    "winStreak"                 "winStreakDates"            "winlessStreak"            
     ## [57] "winlessStreakDates"
 
 ``` r
 names(df_goalie_bruins$data) #goalie data for the Bruins :(
 ```
 
-    ##  [1] "id"                      "activePlayer"           
-    ##  [3] "firstName"               "franchiseId"            
-    ##  [5] "franchiseName"           "gameTypeId"             
-    ##  [7] "gamesPlayed"             "lastName"               
-    ##  [9] "losses"                  "mostGoalsAgainstDates"  
-    ## [11] "mostGoalsAgainstOneGame" "mostSavesDates"         
-    ## [13] "mostSavesOneGame"        "mostShotsAgainstDates"  
-    ## [15] "mostShotsAgainstOneGame" "mostShutoutsOneSeason"  
-    ## [17] "mostShutoutsSeasonIds"   "mostWinsOneSeason"      
-    ## [19] "mostWinsSeasonIds"       "overtimeLosses"         
-    ## [21] "playerId"                "positionCode"           
-    ## [23] "rookieGamesPlayed"       "rookieShutouts"         
-    ## [25] "rookieWins"              "seasons"                
-    ## [27] "shutouts"                "ties"                   
+    ##  [1] "id"                      "activePlayer"            "firstName"               "franchiseId"            
+    ##  [5] "franchiseName"           "gameTypeId"              "gamesPlayed"             "lastName"               
+    ##  [9] "losses"                  "mostGoalsAgainstDates"   "mostGoalsAgainstOneGame" "mostSavesDates"         
+    ## [13] "mostSavesOneGame"        "mostShotsAgainstDates"   "mostShotsAgainstOneGame" "mostShutoutsOneSeason"  
+    ## [17] "mostShutoutsSeasonIds"   "mostWinsOneSeason"       "mostWinsSeasonIds"       "overtimeLosses"         
+    ## [21] "playerId"                "positionCode"            "rookieGamesPlayed"       "rookieShutouts"         
+    ## [25] "rookieWins"              "seasons"                 "shutouts"                "ties"                   
     ## [29] "wins"
 
 ``` r
 names(df_skater_bruins$data) #skater data for the Bruins
 ```
 
-    ##  [1] "id"                          "activePlayer"               
-    ##  [3] "assists"                     "firstName"                  
-    ##  [5] "franchiseId"                 "franchiseName"              
-    ##  [7] "gameTypeId"                  "gamesPlayed"                
-    ##  [9] "goals"                       "lastName"                   
-    ## [11] "mostAssistsGameDates"        "mostAssistsOneGame"         
-    ## [13] "mostAssistsOneSeason"        "mostAssistsSeasonIds"       
-    ## [15] "mostGoalsGameDates"          "mostGoalsOneGame"           
-    ## [17] "mostGoalsOneSeason"          "mostGoalsSeasonIds"         
-    ## [19] "mostPenaltyMinutesOneSeason" "mostPenaltyMinutesSeasonIds"
-    ## [21] "mostPointsGameDates"         "mostPointsOneGame"          
-    ## [23] "mostPointsOneSeason"         "mostPointsSeasonIds"        
-    ## [25] "penaltyMinutes"              "playerId"                   
-    ## [27] "points"                      "positionCode"               
-    ## [29] "rookieGamesPlayed"           "rookiePoints"               
-    ## [31] "seasons"
+    ##  [1] "id"                          "activePlayer"                "assists"                     "firstName"                  
+    ##  [5] "franchiseId"                 "franchiseName"               "gameTypeId"                  "gamesPlayed"                
+    ##  [9] "goals"                       "lastName"                    "mostAssistsGameDates"        "mostAssistsOneGame"         
+    ## [13] "mostAssistsOneSeason"        "mostAssistsSeasonIds"        "mostGoalsGameDates"          "mostGoalsOneGame"           
+    ## [17] "mostGoalsOneSeason"          "mostGoalsSeasonIds"          "mostPenaltyMinutesOneSeason" "mostPenaltyMinutesSeasonIds"
+    ## [21] "mostPointsGameDates"         "mostPointsOneGame"           "mostPointsOneSeason"         "mostPointsSeasonIds"        
+    ## [25] "penaltyMinutes"              "playerId"                    "points"                      "positionCode"               
+    ## [29] "rookieGamesPlayed"           "rookiePoints"                "seasons"
 
 ``` r
 names(df_teams$teams)
 ```
 
-    ##  [1] "id"                    "name"                  "link"                 
-    ##  [4] "abbreviation"          "teamName"              "locationName"         
-    ##  [7] "firstYearOfPlay"       "shortName"             "officialSiteUrl"      
-    ## [10] "franchiseId"           "active"                "venue.name"           
-    ## [13] "venue.link"            "venue.city"            "venue.id"             
-    ## [16] "venue.timeZone.id"     "venue.timeZone.offset" "venue.timeZone.tz"    
-    ## [19] "division.id"           "division.name"         "division.link"        
-    ## [22] "conference.id"         "conference.name"       "conference.link"      
-    ## [25] "franchise.franchiseId" "franchise.teamName"    "franchise.link"
+    ##  [1] "id"                    "name"                  "link"                  "abbreviation"          "teamName"             
+    ##  [6] "locationName"          "firstYearOfPlay"       "shortName"             "officialSiteUrl"       "franchiseId"          
+    ## [11] "active"                "venue.name"            "venue.link"            "venue.city"            "venue.id"             
+    ## [16] "venue.timeZone.id"     "venue.timeZone.offset" "venue.timeZone.tz"     "division.id"           "division.name"        
+    ## [21] "division.link"         "conference.id"         "conference.name"       "conference.link"       "franchise.franchiseId"
+    ## [26] "franchise.teamName"    "franchise.link"
 
 ``` r
 names(df_bruins)
 ```
 
-    ##  [1] "stat.gamesPlayed"              "stat.wins"                    
-    ##  [3] "stat.losses"                   "stat.ot"                      
-    ##  [5] "stat.pts"                      "stat.ptPctg"                  
-    ##  [7] "stat.goalsPerGame"             "stat.goalsAgainstPerGame"     
-    ##  [9] "stat.evGGARatio"               "stat.powerPlayPercentage"     
-    ## [11] "stat.powerPlayGoals"           "stat.powerPlayGoalsAgainst"   
-    ## [13] "stat.powerPlayOpportunities"   "stat.penaltyKillPercentage"   
-    ## [15] "stat.shotsPerGame"             "stat.shotsAllowed"            
-    ## [17] "stat.winScoreFirst"            "stat.winOppScoreFirst"        
-    ## [19] "stat.winLeadFirstPer"          "stat.winLeadSecondPer"        
-    ## [21] "stat.winOutshootOpp"           "stat.winOutshotByOpp"         
-    ## [23] "stat.faceOffsTaken"            "stat.faceOffsWon"             
-    ## [25] "stat.faceOffsLost"             "stat.faceOffWinPercentage"    
-    ## [27] "stat.shootingPctg"             "stat.savePctg"                
-    ## [29] "stat.penaltyKillOpportunities" "stat.savePctRank"             
-    ## [31] "stat.shootingPctRank"          "team.id"                      
-    ## [33] "team.name"                     "team.link"
+    ##  [1] "stat.gamesPlayed"              "stat.wins"                     "stat.losses"                  
+    ##  [4] "stat.ot"                       "stat.pts"                      "stat.ptPctg"                  
+    ##  [7] "stat.goalsPerGame"             "stat.goalsAgainstPerGame"      "stat.evGGARatio"              
+    ## [10] "stat.powerPlayPercentage"      "stat.powerPlayGoals"           "stat.powerPlayGoalsAgainst"   
+    ## [13] "stat.powerPlayOpportunities"   "stat.penaltyKillPercentage"    "stat.shotsPerGame"            
+    ## [16] "stat.shotsAllowed"             "stat.winScoreFirst"            "stat.winOppScoreFirst"        
+    ## [19] "stat.winLeadFirstPer"          "stat.winLeadSecondPer"         "stat.winOutshootOpp"          
+    ## [22] "stat.winOutshotByOpp"          "stat.faceOffsTaken"            "stat.faceOffsWon"             
+    ## [25] "stat.faceOffsLost"             "stat.faceOffWinPercentage"     "stat.shootingPctg"            
+    ## [28] "stat.savePctg"                 "stat.penaltyKillOpportunities" "stat.savePctRank"             
+    ## [31] "stat.shootingPctRank"          "team.id"                       "team.name"                    
+    ## [34] "team.link"
 
 ## Team Specific Information
 
@@ -315,42 +267,27 @@ df_temp_skater <- get_skater_data("Maple Leafs")
 names(df_temp_goalie$data)
 ```
 
-    ##  [1] "id"                      "activePlayer"           
-    ##  [3] "firstName"               "franchiseId"            
-    ##  [5] "franchiseName"           "gameTypeId"             
-    ##  [7] "gamesPlayed"             "lastName"               
-    ##  [9] "losses"                  "mostGoalsAgainstDates"  
-    ## [11] "mostGoalsAgainstOneGame" "mostSavesDates"         
-    ## [13] "mostSavesOneGame"        "mostShotsAgainstDates"  
-    ## [15] "mostShotsAgainstOneGame" "mostShutoutsOneSeason"  
-    ## [17] "mostShutoutsSeasonIds"   "mostWinsOneSeason"      
-    ## [19] "mostWinsSeasonIds"       "overtimeLosses"         
-    ## [21] "playerId"                "positionCode"           
-    ## [23] "rookieGamesPlayed"       "rookieShutouts"         
-    ## [25] "rookieWins"              "seasons"                
-    ## [27] "shutouts"                "ties"                   
+    ##  [1] "id"                      "activePlayer"            "firstName"               "franchiseId"            
+    ##  [5] "franchiseName"           "gameTypeId"              "gamesPlayed"             "lastName"               
+    ##  [9] "losses"                  "mostGoalsAgainstDates"   "mostGoalsAgainstOneGame" "mostSavesDates"         
+    ## [13] "mostSavesOneGame"        "mostShotsAgainstDates"   "mostShotsAgainstOneGame" "mostShutoutsOneSeason"  
+    ## [17] "mostShutoutsSeasonIds"   "mostWinsOneSeason"       "mostWinsSeasonIds"       "overtimeLosses"         
+    ## [21] "playerId"                "positionCode"            "rookieGamesPlayed"       "rookieShutouts"         
+    ## [25] "rookieWins"              "seasons"                 "shutouts"                "ties"                   
     ## [29] "wins"
 
 ``` r
 names(df_temp_skater$data)
 ```
 
-    ##  [1] "id"                          "activePlayer"               
-    ##  [3] "assists"                     "firstName"                  
-    ##  [5] "franchiseId"                 "franchiseName"              
-    ##  [7] "gameTypeId"                  "gamesPlayed"                
-    ##  [9] "goals"                       "lastName"                   
-    ## [11] "mostAssistsGameDates"        "mostAssistsOneGame"         
-    ## [13] "mostAssistsOneSeason"        "mostAssistsSeasonIds"       
-    ## [15] "mostGoalsGameDates"          "mostGoalsOneGame"           
-    ## [17] "mostGoalsOneSeason"          "mostGoalsSeasonIds"         
-    ## [19] "mostPenaltyMinutesOneSeason" "mostPenaltyMinutesSeasonIds"
-    ## [21] "mostPointsGameDates"         "mostPointsOneGame"          
-    ## [23] "mostPointsOneSeason"         "mostPointsSeasonIds"        
-    ## [25] "penaltyMinutes"              "playerId"                   
-    ## [27] "points"                      "positionCode"               
-    ## [29] "rookieGamesPlayed"           "rookiePoints"               
-    ## [31] "seasons"
+    ##  [1] "id"                          "activePlayer"                "assists"                     "firstName"                  
+    ##  [5] "franchiseId"                 "franchiseName"               "gameTypeId"                  "gamesPlayed"                
+    ##  [9] "goals"                       "lastName"                    "mostAssistsGameDates"        "mostAssistsOneGame"         
+    ## [13] "mostAssistsOneSeason"        "mostAssistsSeasonIds"        "mostGoalsGameDates"          "mostGoalsOneGame"           
+    ## [17] "mostGoalsOneSeason"          "mostGoalsSeasonIds"          "mostPenaltyMinutesOneSeason" "mostPenaltyMinutesSeasonIds"
+    ## [21] "mostPointsGameDates"         "mostPointsOneGame"           "mostPointsOneSeason"         "mostPointsSeasonIds"        
+    ## [25] "penaltyMinutes"              "playerId"                    "points"                      "positionCode"               
+    ## [29] "rookieGamesPlayed"           "rookiePoints"                "seasons"
 
 Creating some stats and frequency tables.
 
@@ -421,16 +358,12 @@ in too many games.
 | 38 | Golden Knights |
 | 39 | Kraken         |
 
-    ##  [1] "Montréal Canadiens"    "Toronto Maple Leafs"   "Boston Bruins"        
-    ##  [4] "New York Rangers"      "Chicago Blackhawks"    "Detroit Red Wings"    
-    ##  [7] "Los Angeles Kings"     "Dallas Stars"          "Philadelphia Flyers"  
-    ## [10] "Pittsburgh Penguins"   "St. Louis Blues"       "Buffalo Sabres"       
-    ## [13] "Vancouver Canucks"     "Calgary Flames"        "New York Islanders"   
-    ## [16] "New Jersey Devils"     "Washington Capitals"   "Edmonton Oilers"      
-    ## [19] "Carolina Hurricanes"   "Colorado Avalanche"    "Arizona Coyotes"      
-    ## [22] "San Jose Sharks"       "Ottawa Senators"       "Tampa Bay Lightning"  
-    ## [25] "Anaheim Ducks"         "Florida Panthers"      "Nashville Predators"  
-    ## [28] "Winnipeg Jets"         "Columbus Blue Jackets" "Minnesota Wild"       
+    ##  [1] "Montréal Canadiens"    "Toronto Maple Leafs"   "Boston Bruins"         "New York Rangers"      "Chicago Blackhawks"   
+    ##  [6] "Detroit Red Wings"     "Los Angeles Kings"     "Dallas Stars"          "Philadelphia Flyers"   "Pittsburgh Penguins"  
+    ## [11] "St. Louis Blues"       "Buffalo Sabres"        "Vancouver Canucks"     "Calgary Flames"        "New York Islanders"   
+    ## [16] "New Jersey Devils"     "Washington Capitals"   "Edmonton Oilers"       "Carolina Hurricanes"   "Colorado Avalanche"   
+    ## [21] "Arizona Coyotes"       "San Jose Sharks"       "Ottawa Senators"       "Tampa Bay Lightning"   "Anaheim Ducks"        
+    ## [26] "Florida Panthers"      "Nashville Predators"   "Winnipeg Jets"         "Columbus Blue Jackets" "Minnesota Wild"       
     ## [31] "Vegas Golden Knights"  "Seattle Kraken"
 
 ## Display Data
@@ -497,14 +430,14 @@ df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot(fill = "gr
   theme(axis.text.x = element_text(angle = 25, hjust=1))
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-3-1.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-12-1.png)<!-- -->
 
 ``` r
 df_com %>% ggplot(., aes(x = division.name, y = wins)) + geom_boxplot(fill = 'gray') + 
   labs(x = "Divisions", y = "Number of Wins")
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-3-2.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-12-2.png)<!-- -->
 
 Scatter plots of wins do not seem to point to any relationships in the
 data. We can see that the Knights have the highest Percentage Points and
@@ -517,7 +450,7 @@ df_com %>% ggplot(., aes(x = abbreviation, y = pointPctg)) + geom_point() +
   theme(axis.text.x = element_text(angle = 45, hjust = 1))
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-4-1.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-13-1.png)<!-- -->
 
 ``` r
 df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wins) %>% 
@@ -530,7 +463,7 @@ df_com %>% mutate(win_per_tot = wins / gamesPlayed, win_per_home = homeWins / wi
                                  "Scotia North")) 
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-4-2.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-13-2.png)<!-- -->
 Displaying Home wins in a Histogram shows heavy right skew but this
 could be due to teams with longer tentures having played more games.
 When creating a histogram base on Home Wins as a percentage of total
@@ -542,7 +475,7 @@ df_fran_team_tot$data %>% ggplot(., aes(homeWins)) + geom_histogram(aes(y = ..de
   labs(x = "Number of Home Wins", title = "Histogram of Team Home Wins")
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-5-1.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-14-1.png)<!-- -->
 
 ``` r
 df_com %>% mutate(win_per_home = homeWins / wins) %>% 
@@ -551,84 +484,130 @@ df_com %>% mutate(win_per_home = homeWins / wins) %>%
   labs(x = "Home Wins Percentage", title = "Histogram of Home Wins as a Percentage of Total Wins")
 ```
 
-![](project_markdown_alt_files/figure-gfm/unnamed-chunk-5-2.png)<!-- -->
+![](project_markdown_alt_files/figure-gfm/unnamed-chunk-14-2.png)<!-- -->
 
 ## One Stop Shop Data
 
 If one does not want to run individual functions the grab\_all function
-can be run instead. The function uses 5 arguments: all: to return all
-nhl data team: to return specific team data ID: same as team but uses
-the ID number instead goalie: to return goalie information skater: to
-return skater information. The output for the function is a named list
-containing all the desired information. <Font color = red>**WARNING**
-Named list can be large\! </font>.
+can be run instead. The function uses 5 arguments: - all: to return all
+nhl data - team: to return specific team data - ID: same as team but
+uses the ID number instead - goalie: to return goalie information -
+skater: to return skater information. - The output for the function is a
+named list containing all the desired information.
+<Font color = red>**WARNING** Named list can be large\! </font>.
+
+``` r
+grab_all <- function(all = FALSE, team = NULL, ID = NULL, goalie = FALSE, skater = FALSE){
+  if(all == TRUE){
+    df_franchise <- get_db_records('franchise') 
+    df_fran_team_tot <- get_db_records('franchise-team-totals')
+  } else if(all == FALSE) {
+    df_franchise <- NULL
+    df_fran_team_tot <- NULL}
+ 
+  if(!is.null(team) & is.null(ID)){
+    df_team_data <- get_records(team)
+    df_team_stats <- get_team_stats2(team)
+  } else if(is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(ID = ID)
+    df_team_stats <- get_team_stats2(ID)
+  } else if(!is.null(team) & !is.null(ID)) {
+    df_team_data <- get_records(team)
+    df_team_stats <- get_team_stats2(team)
+  } else if(is.null(team) & is.null(ID)) {
+    df_team_data <- NULL
+    df_team_stats <- NULL
+  }
+  
+  if(goalie == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_goalie <- get_goalie_data(ID = ID)
+  } else if(goalie == TRUE & is.null(team) & is.null(ID)){
+    df_temp_goalie <- get_goalie_data(team)
+  } else if(goalie == FALSE){
+    df_temp_goalie <- NULL
+  }
+  
+  if(skater == TRUE & !is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == TRUE & is.null(team) & !is.null(ID)){
+    df_temp_skater <- get_skater_data(ID = ID)
+  } else if(skater == TRUE & is.null(team) & is.null(ID)){
+    df_temp_skater <- get_skater_data(team)
+  } else if(skater == FALSE){
+    df_temp_skater <- NULL
+  }
+  
+  df_list <- list("franchises" = df_franchise, "team total" = df_fran_team_tot, 
+                  "goalie information" = df_temp_goalie, 
+                  "skater information" = df_temp_skater, 
+                  "team data" = df_team_data, 
+                  "team stats" = df_team_stats)
+  
+  df_list <- df_list[-which(sapply(df_list, is.null))]
+  
+  return(df_list)
+}
+
+# Test grab_all function
+grab_all(all = TRUE, team = 'stars')
+```
 
     ## $franchises
     ## # A tibble: 39 x 2
-    ##    data$id $firstSeasonId $fullName   $lastSeasonId $mostRecentTeam… $teamAbbrev
-    ##      <int>          <int> <chr>               <int>            <int> <chr>      
-    ##  1       1       19171918 Montréal C…            NA                8 MTL        
-    ##  2       2       19171918 Montreal W…      19171918               41 MWN        
-    ##  3       3       19171918 St. Louis …      19341935               45 SLE        
-    ##  4       4       19191920 Hamilton T…      19241925               37 HAM        
-    ##  5       5       19171918 Toronto Ma…            NA               10 TOR        
-    ##  6       6       19241925 Boston Bru…            NA                6 BOS        
-    ##  7       7       19241925 Montreal M…      19371938               43 MMR        
-    ##  8       8       19251926 Brooklyn A…      19411942               51 BRK        
-    ##  9       9       19251926 Philadelph…      19301931               39 QUA        
-    ## 10      10       19261927 New York R…            NA                3 NYR        
-    ## # … with 29 more rows, and 1 more variable: total <int>
+    ##    data$id $firstSeasonId $fullName            $lastSeasonId $mostRecentTeamId $teamAbbrev $teamCommonName $teamPlaceName total
+    ##      <int>          <int> <chr>                        <int>             <int> <chr>       <chr>           <chr>          <int>
+    ##  1       1       19171918 Montréal Canadiens              NA                 8 MTL         Canadiens       Montréal          39
+    ##  2       2       19171918 Montreal Wanderers        19171918                41 MWN         Wanderers       Montreal          39
+    ##  3       3       19171918 St. Louis Eagles          19341935                45 SLE         Eagles          St. Louis         39
+    ##  4       4       19191920 Hamilton Tigers           19241925                37 HAM         Tigers          Hamilton          39
+    ##  5       5       19171918 Toronto Maple Leafs             NA                10 TOR         Maple Leafs     Toronto           39
+    ##  6       6       19241925 Boston Bruins                   NA                 6 BOS         Bruins          Boston            39
+    ##  7       7       19241925 Montreal Maroons          19371938                43 MMR         Maroons         Montreal          39
+    ##  8       8       19251926 Brooklyn Americans        19411942                51 BRK         Americans       Brooklyn          39
+    ##  9       9       19251926 Philadelphia Quakers      19301931                39 QUA         Quakers         Philadelphia      39
+    ## 10      10       19261927 New York Rangers                NA                 3 NYR         Rangers         New York          39
+    ## # … with 29 more rows
     ## 
     ## $`team total`
     ## # A tibble: 105 x 2
-    ##    data$id $activeFranchise $firstSeasonId $franchiseId $gameTypeId $gamesPlayed
-    ##      <int>            <int>          <int>        <int>       <int>        <int>
-    ##  1       1                1       19821983           23           2         2993
-    ##  2       2                1       19821983           23           3          257
-    ##  3       3                1       19721973           22           2         3788
-    ##  4       4                1       19721973           22           3          309
-    ##  5       5                1       19261927           10           2         6560
-    ##  6       6                1       19261927           10           3          518
-    ##  7       7                1       19671968           16           3          449
-    ##  8       8                1       19671968           16           2         4171
-    ##  9       9                1       19671968           17           2         4171
-    ## 10      10                1       19671968           17           3          391
-    ## # … with 95 more rows, and 1 more variable: total <int>
+    ##    data$id $activeFranchise $firstSeasonId $franchiseId $gameTypeId $gamesPlayed $goalsAgainst $goalsFor $homeLosses total
+    ##      <int>            <int>          <int>        <int>       <int>        <int>         <int>     <int>       <int> <int>
+    ##  1       1                1       19821983           23           2         2993          8902      8792         525   105
+    ##  2       2                1       19821983           23           3          257           634       697          53   105
+    ##  3       3                1       19721973           22           2         3788         11907     12045         678   105
+    ##  4       4                1       19721973           22           3          309           897       983          53   105
+    ##  5       5                1       19261927           10           2         6560         20020     20041        1143   105
+    ##  6       6                1       19261927           10           3          518          1447      1404         104   105
+    ##  7       7                1       19671968           16           3          449          1332      1335          97   105
+    ##  8       8                1       19671968           16           2         4171         12255     13690         584   105
+    ##  9       9                1       19671968           17           2         4171         14049     13874         683   105
+    ## 10      10                1       19671968           17           3          391          1131      1190          85   105
+    ## # … with 95 more rows
     ## 
     ## $`team data`
     ## # A tibble: 1 x 2
-    ##   data$id $fewestGoals $fewestGoalsAgai… $fewestGoalsAga… $fewestGoalsSea… total
-    ##     <int>        <int>             <int> <chr>            <chr>            <int>
-    ## 1      25          189               167 1997-98 (82)     1968-69 (76)         1
+    ##   data$id $fewestGoals $fewestGoalsAgain… $fewestGoalsAgains… $fewestGoalsSeas… $fewestLosses $fewestLossesSea… $fewestPoints total
+    ##     <int>        <int>              <int> <chr>               <chr>                     <int> <chr>                     <int> <int>
+    ## 1      25          189                167 1997-98 (82)        1968-69 (76)                 17 2002-03 (82)                 45     1
     ## 
     ## $`team stats`
-    ##   stat.gamesPlayed stat.wins stat.losses stat.ot stat.pts stat.ptPctg
-    ## 1               56        36          15       5       77        68.8
-    ## 2               NA       6th         6th    20th      6th         6th
-    ##   stat.goalsPerGame stat.goalsAgainstPerGame stat.evGGARatio
-    ## 1             3.357                    2.875          1.2336
-    ## 2               5th                     17th             8th
-    ##   stat.powerPlayPercentage stat.powerPlayGoals stat.powerPlayGoalsAgainst
-    ## 1                     24.8                  38                         26
-    ## 2                      3rd                 6th                        5th
-    ##   stat.powerPlayOpportunities stat.penaltyKillPercentage stat.shotsPerGame
-    ## 1                         153                       84.0           29.4107
-    ## 2                        24th                        5th              18th
-    ##   stat.shotsAllowed stat.winScoreFirst stat.winOppScoreFirst
-    ## 1           28.7857               0.75                   0.5
-    ## 2              11th                6th                   6th
-    ##   stat.winLeadFirstPer stat.winLeadSecondPer stat.winOutshootOpp
-    ## 1                0.727                 0.929               0.677
-    ## 2                 20th                   6th                 5th
-    ##   stat.winOutshotByOpp stat.faceOffsTaken stat.faceOffsWon stat.faceOffsLost
-    ## 1                0.545               3134             1542              1592
-    ## 2                  5th               14th             13th              21st
-    ##   stat.faceOffWinPercentage stat.shootingPctg stat.savePctg
-    ## 1                      49.2              11.4           0.9
-    ## 2                      22nd                NA            NA
-    ##   stat.penaltyKillOpportunities stat.savePctRank stat.shootingPctRank team.id
-    ## 1                          <NA>             <NA>                 <NA>      15
-    ## 2                          15th             19th                  2nd      15
-    ##             team.name        team.link
-    ## 1 Washington Capitals /api/v1/teams/15
-    ## 2 Washington Capitals /api/v1/teams/15
+    ##   stat.gamesPlayed stat.wins stat.losses stat.ot stat.pts stat.ptPctg stat.goalsPerGame stat.goalsAgainstPerGame stat.evGGARatio
+    ## 1               56        36          15       5       77        68.8             3.357                    2.875          1.2336
+    ## 2               NA       6th         6th    20th      6th         6th               5th                     17th             8th
+    ##   stat.powerPlayPercentage stat.powerPlayGoals stat.powerPlayGoalsAgainst stat.powerPlayOpportunities stat.penaltyKillPercentage
+    ## 1                     24.8                  38                         26                         153                       84.0
+    ## 2                      3rd                 6th                        5th                        24th                        5th
+    ##   stat.shotsPerGame stat.shotsAllowed stat.winScoreFirst stat.winOppScoreFirst stat.winLeadFirstPer stat.winLeadSecondPer
+    ## 1           29.4107           28.7857               0.75                   0.5                0.727                 0.929
+    ## 2              18th              11th                6th                   6th                 20th                   6th
+    ##   stat.winOutshootOpp stat.winOutshotByOpp stat.faceOffsTaken stat.faceOffsWon stat.faceOffsLost stat.faceOffWinPercentage
+    ## 1               0.677                0.545               3134             1542              1592                      49.2
+    ## 2                 5th                  5th               14th             13th              21st                      22nd
+    ##   stat.shootingPctg stat.savePctg stat.penaltyKillOpportunities stat.savePctRank stat.shootingPctRank team.id           team.name
+    ## 1              11.4           0.9                          <NA>             <NA>                 <NA>      15 Washington Capitals
+    ## 2                NA            NA                          15th             19th                  2nd      15 Washington Capitals
+    ##          team.link
+    ## 1 /api/v1/teams/15
+    ## 2 /api/v1/teams/15
