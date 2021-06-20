@@ -1,9 +1,9 @@
 Readme
 ================
 
-## Readme
-
 ### ST 558 Project 1
+
+[Link to Repo Pages](https://github.com/hkopanski/ST_558_Proj_1)
 
 ### Hockey data API
 
