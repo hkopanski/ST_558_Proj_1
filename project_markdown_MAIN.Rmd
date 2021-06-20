@@ -184,6 +184,34 @@ names(df_teams$teams)
 names(df_bruins)
 ```
 
+Here is some dataframe information
+
+```{r dataframe_info}
+# Information for each dataset
+str(df_franchise$data)
+str(df_fran_team_tot$data)
+str(df_franchise_det$data)
+str(df_records$data) #Data for the Flyers
+str(df_goalie_bruins$data) #goalie data for the Bruins :(
+str(df_skater_bruins$data) #skater data for the Bruins
+str(df_teams$teams)
+str(df_bruins)
+```
+
+Summary Statistics of some of the datasets
+
+```{r summary}
+# Summaries of each dataset
+summary(df_franchise$data)
+summary(df_fran_team_tot$data)
+summary(df_franchise_det$data)
+summary(df_records$data) #Data for the Flyers
+summary(df_goalie_bruins$data) #goalie data for the Bruins :(
+summary(df_skater_bruins$data) #skater data for the Bruins
+summary(df_teams$teams)
+summary(df_bruins)
+```
+
 ## Team Specific Information
 
 Here is a few test scenarios for a handful of team specific datasets. 
@@ -304,13 +332,16 @@ df_com %>% mutate(win_per_home = homeWins / wins) %>%
 
 ## One Stop Shop Data
 
-If one does not want to run individual functions the grab_all function can be run instead. The function uses 5 arguments: 
+If one does not want to run individual functions the grab_all function can be run instead. The function uses 5 arguments:
+
 - all: to return all nhl data 
 - team: to return specific team data 
 - ID: same as team but uses the ID number instead 
 - goalie: to return goalie information 
 - skater: to return skater information. 
-- The output for the function is a named list containing all the desired information.  <Font color = red>**WARNING** Named list can be large! </font>.
+- The output for the function is a named list containing all the desired information.  
+
+<Font color = red>**WARNING** Named list can be large! </font>.
 
 ```{r one_stop, message = FALSE, error= FALSE}
 
